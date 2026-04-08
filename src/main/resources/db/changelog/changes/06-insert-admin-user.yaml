@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-admin-user
+      author: KucherenkoOS
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: admin@admin.com
+
+              - column:
+                 name: first_name
+                 value: admin
+
+              - column:
+                  name: last_name
+                  value: admin
+
+              - column:
+                  name: password
+                  value: $2a$10$3EFAfTCinhHxmdyFwhZSrO0v8ZDen58nc0Sxy097oJnKE369Dvrou
