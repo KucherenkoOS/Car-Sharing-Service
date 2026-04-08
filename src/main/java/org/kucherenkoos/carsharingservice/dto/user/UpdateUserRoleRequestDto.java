@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @Schema(description = "Update role for user (Manager operation")
 public class UpdateUserRoleRequestDto {
-    @Schema(description = "Role name, not case-sensitive because all will be in UpperCase", example = "manager")
+    @Schema(description =
+            "Role name, not case-sensitive because all will be in UpperCase", example = "manager")
     @NotBlank(message = "Role cannot be empty")
     private String role;
 }
