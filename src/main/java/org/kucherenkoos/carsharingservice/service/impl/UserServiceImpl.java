@@ -15,6 +15,8 @@ import org.kucherenkoos.carsharingservice.model.User;
 import org.kucherenkoos.carsharingservice.repository.RoleRepository;
 import org.kucherenkoos.carsharingservice.repository.UserRepository;
 import org.kucherenkoos.carsharingservice.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,4 +103,15 @@ public class UserServiceImpl implements UserService {
                         new EntityNotFoundException("User not found with email: " + email));
     }
 
+    @Override
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new IllegalStateException("No authentication session found");
+        }
+
+        return userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Current user not found in database"));
+    }
 }
