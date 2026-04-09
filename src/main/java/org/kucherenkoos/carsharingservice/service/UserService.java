@@ -4,6 +4,7 @@ import org.kucherenkoos.carsharingservice.dto.user.UpdateUserProfileDto;
 import org.kucherenkoos.carsharingservice.dto.user.UserRegistrationRequestDto;
 import org.kucherenkoos.carsharingservice.dto.user.UserResponseDto;
 import org.kucherenkoos.carsharingservice.exception.RegistrationException;
+import org.kucherenkoos.carsharingservice.model.User;
 
 public interface UserService {
     UserResponseDto register(UserRegistrationRequestDto request)
@@ -14,4 +15,6 @@ public interface UserService {
     UserResponseDto patchProfile(String email, UpdateUserProfileDto dto);
 
     UserResponseDto updateRole(Long id, String role);
+
+    User getCurrentUser();
 }
