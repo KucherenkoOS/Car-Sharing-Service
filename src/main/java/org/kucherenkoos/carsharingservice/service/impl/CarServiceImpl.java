@@ -2,6 +2,8 @@ package org.kucherenkoos.carsharingservice.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.kucherenkoos.carsharingservice.dto.car.CarDto;
 import org.kucherenkoos.carsharingservice.dto.car.CreateCarRequestDto;
 import org.kucherenkoos.carsharingservice.dto.car.UpdateCarRequestDto;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class CarServiceImpl implements CarService {
+    private static final Logger LOGGER = LogManager.getLogger(CarServiceImpl.class);
     private final CarRepository carRepository;
     private final CarMapper carMapper;
 
@@ -30,8 +33,10 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto getCarById(Long id) {
         Car car = carRepository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Can't find car by id: " + id));
+                .orElseThrow(() -> {
+                    LOGGER.warn("Car with ID: {} not found", id);
+                    return new EntityNotFoundException("Can't find car by id: " + id);
+                });
 
         return carMapper.toDto(car);
     }
@@ -46,8 +51,10 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto update(Long id, UpdateCarRequestDto requestDto) {
         Car car = carRepository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Can't find car by id: " + id));
+                .orElseThrow(() -> {
+                    LOGGER.warn("Update: Car with ID: {} not found", id);
+                    return new EntityNotFoundException("Can't find car by id: " + id);
+                });
 
         carMapper.updateCarFromDto(requestDto, car);
 
@@ -57,6 +64,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public void deleteById(Long id) {
         if (!carRepository.existsById(id)) {
+            LOGGER.warn("Delete: Car with ID: {} not found", id);
             throw new EntityNotFoundException("Can't find car by id: " + id);
         }
         carRepository.deleteById(id);
