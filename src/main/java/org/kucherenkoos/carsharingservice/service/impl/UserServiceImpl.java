@@ -3,6 +3,8 @@ package org.kucherenkoos.carsharingservice.service.impl;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.kucherenkoos.carsharingservice.dto.user.UpdateUserProfileDto;
 import org.kucherenkoos.carsharingservice.dto.user.UserRegistrationRequestDto;
 import org.kucherenkoos.carsharingservice.dto.user.UserResponseDto;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -40,7 +43,11 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toModel(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new RegistrationException(RoleName.ROLE_USER + " not found"));
+                .orElseThrow(() -> {
+                    LOGGER.error("Registration error: cannot find role with name {}",
+                            RoleName.ROLE_USER);
+                    return new RegistrationException(RoleName.ROLE_USER + " not found");
+                });
 
         user.setRoles(Set.of(userRole));
         userRepository.save(user);
@@ -78,7 +85,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto updateRole(Long id, String role) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> {
+                    LOGGER.error("Update error: cannot find user with ID {}", id);
+                    return new EntityNotFoundException("User not found with id: " + id);
+                });
 
         String fullRoleName = "ROLE_" + role.toUpperCase();
         RoleName roleName;
@@ -89,7 +99,10 @@ public class UserServiceImpl implements UserService {
         }
 
         Role newRole = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new EntityNotFoundException(roleName + " not found"));
+                .orElseThrow(() -> {
+                    LOGGER.error("Update error: cannot find role with name {}", role);
+                    return new EntityNotFoundException(roleName + " not found");
+                });
 
         user.setRoles(new HashSet<>(Set.of(newRole)));
 
@@ -99,8 +112,10 @@ public class UserServiceImpl implements UserService {
 
     private User getUserByEmailOrThrow(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> {
+                    LOGGER.error("User with email {} not found", email);
+                    return new EntityNotFoundException("User not found with email: " + email);
+                });
     }
 
     @Override
@@ -111,7 +126,9 @@ public class UserServiceImpl implements UserService {
         }
 
         return userRepository.findByEmail(authentication.getName())
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Current user not found in database"));
+                .orElseThrow(() -> {
+                    LOGGER.error("Current user with email {} not found", authentication.getName());
+                    return new EntityNotFoundException("Current user not found in database");
+                });
     }
 }
