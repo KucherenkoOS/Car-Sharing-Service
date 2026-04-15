@@ -1,4 +1,4 @@
-package org.kucherenkoos.carsharingservice.event;
+package org.kucherenkoos.carsharingservice.event.rental;
 
 import org.kucherenkoos.carsharingservice.model.Rental;
 
