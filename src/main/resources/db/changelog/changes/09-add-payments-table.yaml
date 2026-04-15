@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: add-users-table
+      id: add-payments-table
       author: KucherenkoOS
       changes:
         - createTable:
-            tableName: users
+            tableName: payments
             columns:
               - column:
                   name: id
@@ -12,32 +12,46 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    primaryKeyName: pk_users
+                    primaryKeyName: pk_payments
                     nullable: false
 
               - column:
-                  name: email
-                  type: VARCHAR(255)
+                  name: rental_id
+                  type: BIGINT
                   constraints:
                     nullable: false
-                    unique: true
-                    uniqueConstraintName: uc_users_email
+                    foreignKeyName: fk_payments_rentals
+                    references: rentals(id)
 
               - column:
-                  name: first_name
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: last_name
-                  type: VARCHAR(255)
+                  name: session_url
+                  type: VARCHAR(2048)
                   constraints:
                     nullable: false
 
               - column:
-                  name: password
+                  name: session_id
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: total
+                  type: DECIMAL(20, 2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: "PENDING"
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: type
+                  type: VARCHAR(20)
+                  defaultValue: "PAYMENT"
                   constraints:
                     nullable: false
 

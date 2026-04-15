@@ -8,13 +8,15 @@ import org.apache.logging.log4j.Logger;
 import org.kucherenkoos.carsharingservice.dto.rental.CreateRentalRequestDto;
 import org.kucherenkoos.carsharingservice.dto.rental.RentalDetailDto;
 import org.kucherenkoos.carsharingservice.dto.rental.RentalResponseDto;
-import org.kucherenkoos.carsharingservice.event.RentalCreatedEvent;
+import org.kucherenkoos.carsharingservice.event.rental.RentalCreatedEvent;
 import org.kucherenkoos.carsharingservice.exception.EntityNotFoundException;
 import org.kucherenkoos.carsharingservice.mapper.RentalMapper;
 import org.kucherenkoos.carsharingservice.model.Car;
+import org.kucherenkoos.carsharingservice.model.Payment;
 import org.kucherenkoos.carsharingservice.model.Rental;
 import org.kucherenkoos.carsharingservice.model.User;
 import org.kucherenkoos.carsharingservice.repository.CarRepository;
+import org.kucherenkoos.carsharingservice.repository.PaymentRepository;
 import org.kucherenkoos.carsharingservice.repository.RentalRepository;
 import org.kucherenkoos.carsharingservice.service.RentalService;
 import org.kucherenkoos.carsharingservice.service.UserService;
@@ -34,12 +36,29 @@ public class RentalServiceImpl implements RentalService {
     private final RentalMapper rentalMapper;
     private final UserService userService;
     private final ApplicationEventPublisher eventPublisher;
+    private final PaymentRepository paymentRepository;
 
     @Override
     @Transactional
     public RentalResponseDto createRental(CreateRentalRequestDto dto) {
         if (dto.getReturnDate().isBefore(dto.getRentalDate())) {
+            LOGGER.warn("IllegalArgument: return date cannot be before rental date");
             throw new IllegalArgumentException("Return date cannot be before rental date");
+        }
+
+        Long currentUserId = userService.getCurrentUser().getId();
+
+        if (rentalRepository.existsByUserIdAndActualReturnDateIsNull(currentUserId)) {
+            LOGGER.warn("IllegalState: request for new rental when active rental exists");
+            throw new IllegalStateException("You cannot create a new rental."
+                    + " Please return your current car first.");
+        }
+
+        if (paymentRepository.existsByRentalUserIdAndStatusNot(currentUserId,
+                Payment.PaymentStatus.PAID)) {
+            LOGGER.warn("IllegalState: unpaid active rental exists");
+            throw new IllegalStateException("You have unpaid rentals."
+                    + " Please pay them before renting a new car.");
         }
 
         Car car = carRepository.findById(dto.getCarId())
@@ -106,7 +125,8 @@ public class RentalServiceImpl implements RentalService {
     public RentalResponseDto returnRental(Long id) {
         Rental rental = rentalRepository.findById(id)
                 .orElseThrow(() -> {
-                    LOGGER.error("Failed to return rental. Rental with ID: {} not found", id);
+                    LOGGER.error("Failed to return rental. Rental with ID: {} not found",
+                            id);
                     return new EntityNotFoundException("Rental not found: " + id);
                 });
 

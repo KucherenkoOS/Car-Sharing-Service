@@ -26,4 +26,6 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             + "JOIN FETCH r.car "
             + "WHERE r.actualReturnDate IS NULL AND r.returnDate < :date")
     List<Rental> findAllByActualReturnDateIsNullAndReturnDateBefore(@Param("date") LocalDate date);
+
+    boolean existsByUserIdAndActualReturnDateIsNull(Long userId);
 }
