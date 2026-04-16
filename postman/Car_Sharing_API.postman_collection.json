@@ -1,0 +1,668 @@
+{
+  "info": {
+    "_postman_id": "f1fe0667-40f7-4a43-a242-3483b13f8567",
+    "name": "Car Sharing API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52568732",
+    "_collection_link": "https://go.postman.co/collection/52568732-f1fe0667-40f7-4a43-a242-3483b13f8567?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "/auth/register",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"securePassword123\",\r\n  \"repeatPassword\": \"securePassword123\",\r\n  \"firstName\": \"User\",\r\n  \"lastName\": \"Resu\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/auth/login (Manager)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();\r",
+                  "pm.collectionVariables.set(\"accessToken\", responseData.token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@admin.com\",\r\n  \"password\": \"admin123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/auth/login (User)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();\r",
+                  "pm.collectionVariables.set(\"accessToken\", responseData.token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"securePassword123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "/users/me",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstName\": \"Kevin\",\r\n    \"lastName\": \"Smith\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/users/{id}/role",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"role\": \"manager\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/2/role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "2",
+                "role"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cars",
+      "item": [
+        {
+          "name": "/cars",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cars",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cars"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/cars/{id}",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cars/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cars",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/cars",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"model\": \"Cayman\",\r\n    \"brand\": \"Porsche\",\r\n    \"carType\": \"COUPE\",\r\n    \"inventory\": 2,\r\n    \"dailyFee\": 299.99\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cars",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cars"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/cars/{id}",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"inventory\": \"2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cars/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cars",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/cars/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cars/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cars",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Rentals",
+      "item": [
+        {
+          "name": "/rentals",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"carId\": \"2\",\r\n    \"rentalDate\": \"2026-04-10\",\r\n    \"returnDate\": \"2026-04-12\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rentals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rentals"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/rentals",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rentals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rentals"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/rentals/{id}",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rentals/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rentals",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/rentals/{id}/return",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rentals/1/return",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rentals",
+                "1",
+                "return"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/rentals?user_id={id}",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rentals?user_id=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rentals"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/rentals?is_active=true",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/rentals?is_active=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rentals"
+              ],
+              "query": [
+                {
+                  "key": "is_active",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "/payments/",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payments/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/payments/",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rentalId\": 2,\r\n    \"type\": \"PAYMENT\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payments/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/payments/{id}/renew",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payments/6/renew",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments",
+                "6",
+                "renew"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    }
+  ]
+}

@@ -59,6 +59,17 @@ The project demonstrates backend development skills using the Spring Boot ecosys
     - Overdue rentals
     - Payment events
 
+### 🔔 Notifications
+- Telegram notifications for:
+    - New rentals
+    - Overdue rentals
+    - Payment events
+
+### ⏳ Background Tasks (Schedulers)
+The application runs automated scheduled tasks to maintain data consistency and provide timely alerts:
+- **Overdue Rentals Checker:** Runs daily at 09:00 AM. Scans the database for active rentals that have passed their planned return date and broadcasts an alert via Telegram.
+- **Payment Status Synchronizer:** Runs every minute. Automatically fetches the latest status of `PENDING` payment sessions from the Stripe API and updates the local database accordingly (e.g., marking them as `PAID`, `EXPIRED`, or `FAILED`).
+
 ---
 
 ## 🔐 Security
@@ -185,7 +196,7 @@ http://localhost:8080
 
 ### 🔐 Authentication
 #### Register
-POST /auth/registration
+POST /auth/register
 - Creates a new user account
 - Available without authorization
 
@@ -211,7 +222,7 @@ PATCH /cars/{id}
 
 DELETE /cars/{id}
 - Delete car (Manager operation, soft delete)
-
+---
 ### Users
 GET /users/me
 - Get user profile info
@@ -219,9 +230,9 @@ GET /users/me
 PATCH /users/me
 - Update user profile info
 
-PUT /users/{id}/{role}
+PUT /users/{id}/role
 - Update role for user (Manager operation)
-
+---
 ### Rentals
 POST /rentals
 - Create a new rental
@@ -234,7 +245,7 @@ GET /rentals/{id}
 
 POST /rentals/{id}/return
 - Return rental
-
+---
 ### Payments
 POST /payments/
 - Creating payment session
@@ -303,14 +314,14 @@ The application uses role-based access control (RBAC) with two roles:
 
 Managers have full access to all USER operations plus administrative capabilities:
 
-| Resource  | Endpoint                    | Method | Description                  |
-|----------|-----------------------------|--------|------------------------------|
-| Cars     | /cars                       | POST   | Create car                   |
-| Cars     | /cars/{id}                  | PATCH  | Update car                   |
-| Cars     | /cars/{id}                  | DELETE | Soft delete car              |
-| Users    | /users/{id}/{role}          | PUT    | Update user role             |
-| Rentals  | /rentals                    | GET    | View all rentals             |
-| Payments | /payments                   | GET    | View payments (any user)     |
+| Resource  | Endpoint                  | Method | Description                  |
+|----------|---------------------------|--------|------------------------------|
+| Cars     | /cars                     | POST   | Create car                   |
+| Cars     | /cars/{id}                | PATCH  | Update car                   |
+| Cars     | /cars/{id}                | DELETE | Soft delete car              |
+| Users    | /users/{id}/role          | PUT    | Update user role             |
+| Rentals  | /rentals                  | GET    | View all rentals             |
+| Payments | /payments                 | GET    | View payments (any user)     |
 
 ---
 
@@ -328,40 +339,35 @@ Managers have full access to all USER operations plus administrative capabilitie
 ---
 ## 🧪 Testing
 
-The project includes:
+#### Testing: The project includes Unit tests (JUnit 5 + Mockito), Repository tests (@DataJpaTest), and Service layer tests. Run them using:
 
-- Unit tests (JUnit + Mockito)
-- Repository tests (@DataJpaTest)
-- Service layer tests with mocked dependencies
-
-Run tests:
 ```bash
-mvn test
+mvn clean test
 ```
 ## 📬 Postman Collection
 
 You can test API endpoints using Postman.
 
 1. Import collection from:
-   `postman/Car_SharingAPI.postman_collection.json`
+   `postman/Car_Sharing_API.postman_collection.json`
 
 2. Run login request to obtain JWT token
 
 3. Token will be automatically saved and used for authorized requests
 
 ## 🗄️ Database
-- MySQL is used as the primary database
-- Hibernate (JPA) is used for ORM
-- Database schema is managed via Liquibase changeSets
-- All schema changes are version-controlled and applied automatically on application startup
+- MySQL is the primary database. 
+- Database schema and migrations are managed automatically via Liquibase changeSets on startup. 
+- Soft-deletion logic is implemented to maintain historical integrity.
 
 ## 🧩 Database Diagram
 
 ![Database Diagram](docs/Car-Sharing-Service-DB.png)
 
-## ⚡ Challenges
-- Designing clean architecture (Controller → Service → Repository)
-- Implementing secure JWT authentication
-- Managing entity relationships
-- Implementing payments
-- Writing testable and maintainable code
+## ⚡ Challenges & Learnings
+- Designing a clean, layered architecture (Controller → Service → Repository).
+- Implementing secure, stateless JWT authentication and role-based authorization. 
+- Managing complex entity relationships and enforcing constraints. 
+- Integrating a real-world payment gateway (Stripe) and handling asynchronous webhooks/callbacks. 
+- Building a reliable, event-driven Telegram notification system using standard REST templates. 
+- Writing robust, isolated tests for components handling external APIs and static methods.

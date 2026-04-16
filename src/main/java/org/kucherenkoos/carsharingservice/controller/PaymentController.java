@@ -27,15 +27,15 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @Operation(summary = "Creating payment session")
-    @PostMapping("/")
     @PreAuthorize("hasRole('USER')")
+    @PostMapping("/")
     public PaymentResponseDto createPaymentSession(@RequestBody PaymentRequestDto requestDto) {
         return paymentService.createPaymentSession(requestDto);
     }
 
     @Operation(summary = "Get user payments (Manager may choose specific user")
-    @GetMapping("/")
     @PreAuthorize("hasRole('USER') or hasRole('MANAGER')")
+    @GetMapping("/")
     public List<PaymentResponseDto> getPayments(
             @RequestParam(value = "user_id", required = false) Long userId,
             @AuthenticationPrincipal User currentUser) {
@@ -59,6 +59,7 @@ public class PaymentController {
     }
 
     @Operation(summary = "Renew expired payment session")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/{id}/renew")
     public PaymentResponseDto renewPayment(@PathVariable Long id) {
         return paymentService.renewPaymentSession(id);

@@ -134,13 +134,18 @@ public class RentalServiceImpl implements RentalService {
             throw new IllegalStateException("Rental was already returned");
         }
 
-        rental.setActualReturnDate(LocalDate.now());
+        User currentUser = userService.getCurrentUser();
+        if (rental.getUser().getId().equals(currentUser.getId())) {
+            rental.setActualReturnDate(LocalDate.now());
 
-        Car car = rental.getCar();
-        car.setInventory(car.getInventory() + 1);
-        carRepository.save(car);
+            Car car = rental.getCar();
+            car.setInventory(car.getInventory() + 1);
+            carRepository.save(car);
 
-        return rentalMapper.toDto(rentalRepository.save(rental));
+            return rentalMapper.toDto(rentalRepository.save(rental));
+        }
+        LOGGER.warn("User with ID: {} tries to return another users rental", currentUser.getId());
+        throw new AccessDeniedException("No access to this rental");
     }
 
     private boolean isManager(User user) {
