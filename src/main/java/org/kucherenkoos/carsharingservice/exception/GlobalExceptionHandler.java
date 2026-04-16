@@ -52,7 +52,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(StripeSessionException.class)
     public ResponseEntity<Object> handleStripeSessionException(StripeSessionException ex) {
-        LOGGER.error("Stripe session error: {}", ex.getMessage(), ex);
+        LOGGER.error("Stripe session error: {}",
+                ex.getMessage(), ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
     }
 
