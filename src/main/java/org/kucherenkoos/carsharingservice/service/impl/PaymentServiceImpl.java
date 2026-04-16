@@ -20,7 +20,9 @@ import org.kucherenkoos.carsharingservice.model.User;
 import org.kucherenkoos.carsharingservice.repository.PaymentRepository;
 import org.kucherenkoos.carsharingservice.repository.RentalRepository;
 import org.kucherenkoos.carsharingservice.service.PaymentService;
+import org.kucherenkoos.carsharingservice.service.UserService;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final StripeService stripeService;
     private final PaymentMapper paymentMapper;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserService userService;
 
     @Override
     @Transactional
@@ -45,6 +48,14 @@ public class PaymentServiceImpl implements PaymentService {
                     return new EntityNotFoundException("Rental not found by id: "
                             + requestDto.getRentalId());
                 });
+
+        User currentUser = userService.getCurrentUser();
+        if (!rental.getUser().getId().equals(currentUser.getId())) {
+            LOGGER.warn("Access denied. User {} tried to create a payment for rental {}",
+                     currentUser.getId(), rental.getId());
+            throw new AccessDeniedException("You don't have permission "
+                    + "to create a payment for this rental.");
+        }
 
         Optional<Payment> existingPayment =
                 paymentRepository.findByRentalIdAndStatus(
@@ -162,6 +173,13 @@ public class PaymentServiceImpl implements PaymentService {
                     paymentId,
                     payment.getStatus());
             throw new IllegalStateException("Only expired or canceled payments can be renewed");
+        }
+
+        User currentUser = userService.getCurrentUser();
+        if (!payment.getRental().getUser().getId().equals(currentUser.getId())) {
+            LOGGER.warn("Access denied. User {} tried to renew payment {}",
+                    currentUser.getId(), payment.getId());
+            throw new AccessDeniedException("You don't have permission to renew this payment.");
         }
 
         Session session = stripeService.createStripeSession(

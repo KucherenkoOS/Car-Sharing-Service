@@ -38,6 +38,7 @@ public class RentalController {
     }
 
     @Operation(summary = "List all rentals with pagination and sorting")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     public Page<RentalResponseDto> getRentals(
             @Parameter(description
@@ -51,12 +52,14 @@ public class RentalController {
     }
 
     @Operation(summary = "Watch details about specific rental")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     public RentalDetailDto getRentalById(@PathVariable Long id) {
         return rentalService.getRentalById(id);
     }
 
     @Operation(summary = "Return rental")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/{id}/return")
     public RentalResponseDto returnRental(@PathVariable Long id) {
         return rentalService.returnRental(id);

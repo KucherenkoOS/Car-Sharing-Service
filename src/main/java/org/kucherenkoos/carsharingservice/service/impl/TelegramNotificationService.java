@@ -15,7 +15,7 @@ public class TelegramNotificationService implements NotificationService {
 
     private static final String TELEGRAM_API_URL = "https://api.telegram.org/bot{token}/sendMessage";
     private static final Logger LOGGER = LogManager.getLogger(TelegramNotificationService.class);
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Value("${telegram.bot.token}")
     private String botToken;
