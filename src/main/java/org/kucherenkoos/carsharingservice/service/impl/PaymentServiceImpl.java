@@ -244,9 +244,10 @@ public class PaymentServiceImpl implements PaymentService {
                 return BigDecimal.ZERO;
             }
 
-            return dailyFee.multiply(
-                    BigDecimal.valueOf(plannedDays).add(
-                            BigDecimal.valueOf(overdueDays).multiply(FINE_MULTIPLIER)
+            return dailyFee
+                    .multiply(BigDecimal.valueOf(plannedDays)
+                            .add(BigDecimal.valueOf(overdueDays)
+                                    .multiply(FINE_MULTIPLIER)
                     )
             );
         }
