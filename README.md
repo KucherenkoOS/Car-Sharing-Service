@@ -10,7 +10,7 @@ The project demonstrates backend development skills using the Spring Boot ecosys
 
 ## 🛠️ Technologies
 
-- Java 17
+- Java **17**
 - Spring Boot **3.4.2**
 - Spring Security
 - Spring Data JPA (Hibernate)
@@ -368,6 +368,6 @@ You can test API endpoints using Postman.
 - Designing a clean, layered architecture (Controller → Service → Repository).
 - Implementing secure, stateless JWT authentication and role-based authorization. 
 - Managing complex entity relationships and enforcing constraints. 
-- Integrating a real-world payment gateway (Stripe) and handling asynchronous webhooks/callbacks. 
+- Integrating a real-world payment gateway (Stripe). 
 - Building a reliable, event-driven Telegram notification system using standard REST templates. 
 - Writing robust, isolated tests for components handling external APIs and static methods.
